@@ -3,12 +3,20 @@ import mongoose from 'mongoose';
 
 dotenv.config();
 
-export async function ConnectToMongo() {
-  await mongoose
-    .connect(process.env.MONGO_URL)
-    .then((x) => {
-      console.log(x);
-      console.log(x.Collection);
-    })
-    .catch((err) => console.log(err));
-}
+mongoose.connect(process.env.MONGO_URL, {
+  dbName: 'is-done',
+});
+
+const conn = mongoose.connection;
+
+conn.on('connected', () => {
+  console.log('database is connected successfully');
+});
+
+conn.on('disconnected', () => {
+  console.log('database is disconnected successfully');
+});
+
+conn.on('error', console.error.bind(console, 'connection error:'));
+
+export { conn };
