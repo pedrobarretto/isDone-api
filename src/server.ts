@@ -1,57 +1,14 @@
-import express, { json } from 'express';
+import express from 'express';
 import { v4 as uuid } from 'uuid';
 
 import { Todo } from './interfaces/Todo';
 import { User } from './interfaces/User';
 import { conn } from './mongo';
+import { router } from './routes';
 
 const app = express();
-app.use(json());
-
-const findById = async (id: string) => {
-  const isDone = conn.db.collection('todos');
-  try {
-    const user = await isDone.findOne({ id });
-    return user;
-  } catch (err) {
-    return console.log(err);
-  }
-};
-
-const createUser = (user: User) => {
-  const isDone = conn.db.collection('todos');
-
-  isDone.insertOne(user);
-};
-
-app.get('/user/:id', (req, res) => {
-  const { id } = req.params;
-  const isDone = conn.db.collection('todos');
-  isDone
-    .findOne({ id })
-    .then((user) => {
-      return res.status(200).json(user);
-    })
-    .catch((err) => {
-      return res.status(400).send({ error: err });
-    });
-});
-
-app.post('/user', (req, res) => {
-  const { firstName, lastName } = req.body;
-
-  const user: User = {
-    firstName,
-    lastName,
-    fullName: `${firstName} ${lastName}`,
-    createdDate: new Date(),
-    todos: [],
-    id: uuid(),
-  };
-
-  createUser(user);
-  return res.send(201).json(user);
-});
+app.use(express.json());
+app.use(router);
 
 app.post('/todo/:id', (req, res) => {
   const { id } = req.params;
