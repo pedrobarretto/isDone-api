@@ -2,7 +2,6 @@ import express from 'express';
 import { v4 as uuid } from 'uuid';
 
 import { Todo } from './interfaces/Todo';
-import { User } from './interfaces/User';
 import { conn } from './mongo';
 import { router } from './routes';
 
