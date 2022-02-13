@@ -20,12 +20,13 @@ class TodosApp {
   }
 
   create(req: Request): Promise<User> {
-    const { firstName, lastName, fullName } = req.body;
+    const { firstName, lastName, fullName, email } = req.body;
 
     const newUser: User = {
       firstName,
       lastName,
       fullName,
+      email,
       createdDate: new Date(),
       id: uuid(),
       todos: [],

@@ -6,8 +6,6 @@ dotenv.config();
 const conn = mongoose.connection;
 
 export function connect() {
-  if (conn) return;
-
   mongoose.connect(process.env.MONGO_URL, {
     dbName: 'is-done',
   });
