@@ -5,13 +5,14 @@ import {
   listTodos,
   markTodoAsDone,
 } from '../database/todos/todos.statics';
+import { VerifyIfTodoExists } from '../middlewares/TodosMiddlewares';
 
 const todosRoutes = Router();
 
-todosRoutes.get('/:id', (req: Request, res: Response) => {
+todosRoutes.get('/:id', VerifyIfTodoExists, (req: Request, res: Response) => {
   const { id } = req.params;
+  // fix me
   listTodos(id).then((data) => {
-    console.log(data);
     return res.status(200).json(data);
   });
 });

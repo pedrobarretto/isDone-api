@@ -1,8 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 
 import { todosApp } from '../apps/todos/TodosApp';
-import { findByEmail } from '../database/users/users.methods';
-import { BadRequestException } from '../errors/BadRequestException';
 
 export function VerifyIfUserAlreadyExists(
   req: Request,
@@ -11,17 +9,34 @@ export function VerifyIfUserAlreadyExists(
 ) {
   const { email, firstName, lastName, fullName } = req.body;
 
-  findByEmail(email).then((userAlreadyExists) => {
-    if (!firstName) BadRequestException(res, 'must-provide-firstName');
+  todosApp.findByEmail(email).then((userAlreadyExists) => {
+    if (!firstName)
+      return res
+        .status(400)
+        .send({ message: 'must-provide-name', statusCode: 400 });
 
-    if (!lastName) BadRequestException(res, 'must-provide-lastName');
+    if (!lastName)
+      return res
+        .status(400)
+        .send({ message: 'must-provide-lastname', statusCode: 400 });
 
-    if (!fullName) BadRequestException(res, 'must-provide-fullName');
+    if (!fullName)
+      return res
+        .status(400)
+        .send({ message: 'must-provide-fullname', statusCode: 400 });
 
-    if (userAlreadyExists) BadRequestException(res, 'user-already-exists');
+    if (!email)
+      return res
+        .status(400)
+        .send({ message: 'must-provide-email', statusCode: 400 });
+
+    if (userAlreadyExists.email === email)
+      return res
+        .status(400)
+        .send({ message: 'user-already-exists', statusCode: 400 });
+
+    return next();
   });
-  console.log('PASSANDO DAS VALIDACOES');
-  return next();
 }
 
 export function VerifyIfIdExists(
@@ -31,10 +46,8 @@ export function VerifyIfIdExists(
 ) {
   const { id } = req.params;
   todosApp.findById(id).then((user) => {
-    console.log('id: ', id);
-    console.log('user: ', user);
-
-    if (!user || user === null) return BadRequestException(res, 'not-found');
+    if (!user || user === null)
+      return res.status(400).send({ message: 'not-found', statusCode: 400 });
 
     return next();
   });

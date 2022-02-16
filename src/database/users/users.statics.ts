@@ -16,3 +16,8 @@ export async function createUser(dto: User): Promise<UserDocument> {
   const user = await UserModel.create(dto);
   return user;
 }
+
+export async function findUserByEmail(email: string): Promise<UserDocument> {
+  const user = await UserModel.findOne({ email });
+  return user;
+}

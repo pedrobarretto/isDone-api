@@ -4,6 +4,7 @@ import { v4 as uuid } from 'uuid';
 import {
   createUser,
   findUser,
+  findUserByEmail,
   listUsers,
 } from '../../database/users/users.statics';
 import { User } from '../../interfaces/User';
@@ -16,6 +17,11 @@ class TodosApp {
 
   findById(id: string): Promise<User> {
     const user = findUser(id);
+    return user;
+  }
+
+  findByEmail(email: string): Promise<User> {
+    const user = findUserByEmail(email);
     return user;
   }
 
