@@ -38,19 +38,3 @@ export function VerifyIfUserAlreadyExists(
     return next();
   });
 }
-
-export function VerifyIfIdExists(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  const { id } = req.params;
-  todosApp.findById(id).then((user) => {
-    if (!user || user === null)
-      return res.status(400).send({ message: 'not-found', statusCode: 400 });
-
-    return next();
-  });
-
-  return next();
-}

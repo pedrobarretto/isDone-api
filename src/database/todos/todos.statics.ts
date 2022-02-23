@@ -1,4 +1,3 @@
-import { Response } from 'express';
 import { v4 as uuid } from 'uuid';
 
 import { Todo } from '../../interfaces/Todo';
