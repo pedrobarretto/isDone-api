@@ -6,6 +6,7 @@ export interface User {
   lastName: string;
   fullName: string;
   email: string;
+  password: string;
   createdDate: Date;
   todos: Todo[];
 }

@@ -1,6 +1,7 @@
 import { Request } from 'express';
 import { v4 as uuid } from 'uuid';
 
+import { handlePasswordHash } from '../../database/users/users.methods';
 import {
   createUser,
   findUser,
@@ -25,21 +26,22 @@ class TodosApp {
     return user;
   }
 
-  create(req: Request): Promise<User> {
-    const { firstName, lastName, fullName, email } = req.body;
+  create(req: Request): void {
+    const { firstName, lastName, fullName, email, password } = req.body;
 
-    const newUser: User = {
-      firstName,
-      lastName,
-      fullName,
-      email,
-      createdDate: new Date(),
-      id: uuid(),
-      todos: [],
-    };
-
-    const user = createUser(newUser);
-    return user;
+    handlePasswordHash(password).then((pwd) => {
+      const newUser: User = {
+        firstName,
+        lastName,
+        fullName,
+        email,
+        password: pwd,
+        id: uuid(),
+        createdDate: new Date(),
+        todos: [],
+      };
+      createUser(newUser);
+    });
   }
 }
 
