@@ -5,12 +5,15 @@ import {
   listTodos,
   markTodoAsDone,
 } from '../database/todos/todos.statics';
+import { AuthMiddleware } from '../middlewares/AuthMiddleware';
 import {
   VerifyIfTodoExists,
   VerifyIfUsersExists,
 } from '../middlewares/TodosMiddlewares';
 
 const todosRoutes = Router();
+
+todosRoutes.use(AuthMiddleware);
 
 todosRoutes.get('/:id', VerifyIfUsersExists, (req: Request, res: Response) => {
   const { id } = req.params;

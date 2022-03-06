@@ -6,6 +6,7 @@ import {
   gerenateTokenPayload,
   handleGenerateToken,
 } from '../database/users/users.methods';
+import { AuthMiddleware } from '../middlewares/AuthMiddleware';
 import { VerifyIfUsersExists } from '../middlewares/TodosMiddlewares';
 import {
   VerifyIfUserAlreadyExists,
@@ -13,19 +14,6 @@ import {
 } from '../middlewares/UsersMiddlewares';
 
 const userRoutes = Router();
-
-userRoutes.get('/', (req: Request, res: Response) => {
-  todosApp.list().then((users) => {
-    return res.status(200).json(users);
-  });
-});
-
-userRoutes.get('/:id', VerifyIfUsersExists, (req: Request, res: Response) => {
-  const { id } = req.params;
-  todosApp.findById(id).then((user) => {
-    return res.status(200).json(user);
-  });
-});
 
 userRoutes.post(
   '/',
@@ -43,6 +31,21 @@ userRoutes.post('/login', VerifyUserLogin, (req: Request, res: Response) => {
     const payload = gerenateTokenPayload(user.id);
     const token = handleGenerateToken(payload);
     return res.status(200).json({ token });
+  });
+});
+
+userRoutes.use(AuthMiddleware);
+
+userRoutes.get('/', (req: Request, res: Response) => {
+  todosApp.list().then((users) => {
+    return res.status(200).json(users);
+  });
+});
+
+userRoutes.get('/:id', VerifyIfUsersExists, (req: Request, res: Response) => {
+  const { id } = req.params;
+  todosApp.findById(id).then((user) => {
+    return res.status(200).json(user);
   });
 });
 

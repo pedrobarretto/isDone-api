@@ -25,3 +25,7 @@ export function gerenateTokenPayload(id: string): TokenPayload {
 export function comparePassword(password: string, userPassword: string) {
   return bcrypt.compare(password, userPassword);
 }
+
+export function verifyToken(token: string) {
+  return jwt.verify(token, 'randomString');
+}
