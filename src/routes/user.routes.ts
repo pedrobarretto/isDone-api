@@ -2,8 +2,15 @@ import { Router, Request, Response } from 'express';
 import { check } from 'express-validator';
 
 import { todosApp } from '../apps/todos/TodosApp';
+import {
+  gerenateTokenPayload,
+  handleGenerateToken,
+} from '../database/users/users.methods';
 import { VerifyIfUsersExists } from '../middlewares/TodosMiddlewares';
-import { VerifyIfUserAlreadyExists } from '../middlewares/UsersMiddlewares';
+import {
+  VerifyIfUserAlreadyExists,
+  VerifyUserLogin,
+} from '../middlewares/UsersMiddlewares';
 
 const userRoutes = Router();
 
@@ -29,5 +36,14 @@ userRoutes.post(
     return res.sendStatus(201);
   }
 );
+
+userRoutes.post('/login', VerifyUserLogin, (req: Request, res: Response) => {
+  const { email } = req.body;
+  todosApp.findByEmail(email).then((user) => {
+    const payload = gerenateTokenPayload(user.id);
+    const token = handleGenerateToken(payload);
+    return res.status(200).json({ token });
+  });
+});
 
 export { userRoutes };
