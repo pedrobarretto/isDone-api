@@ -10,18 +10,37 @@ import {
 } from '../../database/users/users.statics';
 import { User } from '../../interfaces/User';
 
+type ClientUser = Omit<User, 'password'>;
+
 class TodosApp {
-  list(): Promise<User[]> {
-    const all = listUsers();
+  list(): Promise<ClientUser[]> {
+    const all = listUsers().then((users) => {
+      return users.map((user) => {
+        return {
+          firstName: user.firstName,
+          lastName: user.lastName,
+          fullName: user.fullName,
+          email: user.email,
+          todos: user.todos,
+          createdDate: user.createdDate,
+          id: user.id,
+        };
+      });
+    });
     return all;
   }
 
-  findById(id: string): Promise<User> {
+  findById(id: string): Promise<ClientUser> {
     const user = findUser(id);
     return user;
   }
 
-  findByEmail(email: string): Promise<User> {
+  findByEmail(email: string): Promise<ClientUser> {
+    const user = findUserByEmail(email);
+    return user;
+  }
+
+  findByEmailIntern(email: string): Promise<User> {
     const user = findUserByEmail(email);
     return user;
   }

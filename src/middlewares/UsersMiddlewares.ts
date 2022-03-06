@@ -62,7 +62,7 @@ export function VerifyUserLogin(
       .status(400)
       .send({ message: 'must-provide-password', statusCode: 400 });
 
-  todosApp.findByEmail(email).then(async (user) => {
+  todosApp.findByEmailIntern(email).then(async (user) => {
     if (!user)
       return res.status(400).send({ message: 'not-found', statusCode: 400 });
 
