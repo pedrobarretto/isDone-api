@@ -15,5 +15,5 @@ Front end on the way.
 ### Features
 - [X] Complete CRUD of to-dos and users
 - [X] Authentication
-- [X] Docker
+- [ ] Docker
 - [ ] Swagger for documentation
