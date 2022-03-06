@@ -1,3 +1,19 @@
-# IsDone - Your todo app
+## IsDone - Your todo app
 
-Starting development
+IsDone is a to-do API for you to organize your daily tasks.
+Front end on the way.
+
+### Stack of API:
+- Node.js
+- Typescript
+- Express
+- JWT
+- MongoDB
+- Mongoose
+- bcryptjs
+
+### Features
+- [X] Complete CRUD of to-dos and users
+- [X] Authentication
+- [ ] Docker
+- [ ] Swagger for documentation
