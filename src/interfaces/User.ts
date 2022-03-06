@@ -10,3 +10,5 @@ export interface User {
   createdDate: Date;
   todos: Todo[];
 }
+
+export type ClientUser = Omit<User, 'password'>;

@@ -1,42 +1,39 @@
 import { Request } from 'express';
 import { v4 as uuid } from 'uuid';
 
-import { handlePasswordHash } from '../../database/users/users.methods';
+import {
+  handlePasswordHash,
+  hidePassword,
+} from '../../database/users/users.methods';
 import {
   createUser,
   findUser,
   findUserByEmail,
   listUsers,
 } from '../../database/users/users.statics';
-import { User } from '../../interfaces/User';
-
-type ClientUser = Omit<User, 'password'>;
+import { ClientUser, User } from '../../interfaces/User';
 
 class TodosApp {
   list(): Promise<ClientUser[]> {
     const all = listUsers().then((users) => {
       return users.map((user) => {
-        return {
-          firstName: user.firstName,
-          lastName: user.lastName,
-          fullName: user.fullName,
-          email: user.email,
-          todos: user.todos,
-          createdDate: user.createdDate,
-          id: user.id,
-        };
+        return hidePassword(user);
       });
     });
     return all;
   }
 
   findById(id: string): Promise<ClientUser> {
-    const user = findUser(id);
+    const user = findUser(id).then((user) => {
+      return hidePassword(user);
+    });
     return user;
   }
 
   findByEmail(email: string): Promise<ClientUser> {
-    const user = findUserByEmail(email);
+    const user = findUserByEmail(email).then((user) => {
+      return hidePassword(user);
+    });
     return user;
   }
 

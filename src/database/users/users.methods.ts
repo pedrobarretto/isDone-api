@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 import { TokenPayload } from '../../interfaces/Auth';
+import { ClientUser, User } from '../../interfaces/User';
 
 export async function handlePasswordHash(password: string) {
   const salt = await bcrypt.genSalt(10);
@@ -28,4 +29,16 @@ export function comparePassword(password: string, userPassword: string) {
 
 export function verifyToken(token: string) {
   return jwt.verify(token, 'randomString');
+}
+
+export function hidePassword(user: User): ClientUser {
+  return {
+    firstName: user.firstName,
+    lastName: user.lastName,
+    fullName: user.fullName,
+    email: user.email,
+    todos: user.todos,
+    createdDate: user.createdDate,
+    id: user.id,
+  };
 }
