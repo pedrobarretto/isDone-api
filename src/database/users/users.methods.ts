@@ -4,6 +4,8 @@ import jwt from 'jsonwebtoken';
 import { TokenPayload } from '../../interfaces/Auth';
 import { ClientUser, User } from '../../interfaces/User';
 
+const secretKey = process.env.SECRET_KEY;
+
 export async function handlePasswordHash(password: string) {
   const salt = await bcrypt.genSalt(10);
   const passwordHash = await bcrypt.hash(password, salt);
@@ -11,7 +13,7 @@ export async function handlePasswordHash(password: string) {
 }
 
 export function handleGenerateToken(payload: TokenPayload) {
-  return jwt.sign(payload, 'randomString', { expiresIn: 3600 });
+  return jwt.sign(payload, secretKey, { expiresIn: 3600 });
 }
 
 export function gerenateTokenPayload(id: string): TokenPayload {
@@ -28,7 +30,7 @@ export function comparePassword(password: string, userPassword: string) {
 }
 
 export function verifyToken(token: string) {
-  return jwt.verify(token, 'randomString');
+  return jwt.verify(token, secretKey);
 }
 
 export function hidePassword(user: User): ClientUser {
