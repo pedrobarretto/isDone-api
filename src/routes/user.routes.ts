@@ -1,11 +1,14 @@
 import { Router, Request, Response } from 'express';
 import { check } from 'express-validator';
+import { v4 as uuid } from 'uuid';
 
 import { todosApp } from '../apps/todos/TodosApp';
+import { SessionModel } from '../database/sessions/sessions.model';
 import {
   gerenateTokenPayload,
   handleGenerateToken,
 } from '../database/users/users.methods';
+import { Session } from '../interfaces/Auth';
 import { AuthMiddleware } from '../middlewares/AuthMiddleware';
 import { VerifyIfUsersExists } from '../middlewares/TodosMiddlewares';
 import {
@@ -30,6 +33,25 @@ userRoutes.post('/login', VerifyUserLogin, (req: Request, res: Response) => {
   todosApp.findByEmail(email).then((user) => {
     const payload = gerenateTokenPayload(user.id);
     const token = handleGenerateToken(payload);
+
+    const { session }: any = req;
+    if (session.userId) {
+      console.log('session that exists: ', session);
+    } else {
+      session.userId = user.id;
+      // session.id = uuid();
+      const newSession: Session = {
+        userId: user.id,
+        id: uuid(),
+        _expires: req.session.cookie.expires,
+        httpOnly: req.session.cookie.httpOnly,
+        originalMaxAge: req.session.cookie.originalMaxAge,
+        path: req.session.cookie.path,
+      };
+      console.log('newSession: ', newSession);
+      SessionModel.create(newSession);
+    }
+
     return res.status(200).json({ token });
   });
 });
@@ -47,6 +69,19 @@ userRoutes.get('/:id', VerifyIfUsersExists, (req: Request, res: Response) => {
   todosApp.findById(id).then((user) => {
     return res.status(200).json(user);
   });
+});
+
+userRoutes.post('/logout', (req: Request, res: Response) => {
+  const { session }: any = req;
+
+  if (!session.userId)
+    return res
+      .status(400)
+      .json({ status: 400, message: 'session-does-not-exists' });
+
+  SessionModel.deleteOne({ id: session.id });
+  req.session.destroy((err) => console.log(err));
+  return res.status(200).json({ status: 200, message: 'session-deleted' });
 });
 
 export { userRoutes };

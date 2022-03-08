@@ -1,9 +1,16 @@
+import MongoStore from 'connect-mongo';
 import dotenv from 'dotenv';
+import session from 'express-session';
 import mongoose from 'mongoose';
 
 dotenv.config();
 
 const conn = mongoose.connection;
+
+export const sessionStore = new MongoStore({
+  mongoUrl: process.env.MONGO_URL,
+  collectionName: 'sessions',
+});
 
 export function connect() {
   mongoose.connect(process.env.MONGO_URL, {

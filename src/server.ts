@@ -1,11 +1,24 @@
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import express from 'express';
+import session from 'express-session';
 
-import { connect } from './mongo';
+import { connect, sessionStore } from './mongo';
 import { router } from './routes';
 
 const app = express();
+
+app.use(
+  session({
+    secret: process.env.SECRET_KEY,
+    resave: false,
+    saveUninitialized: true,
+    store: sessionStore,
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 24,
+    },
+  })
+);
 
 app.use(express.json());
 
