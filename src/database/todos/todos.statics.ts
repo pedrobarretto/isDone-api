@@ -14,7 +14,6 @@ export async function listTodos(id: string): Promise<Todo[]> {
 export async function createTodo(id: string, text: string): Promise<Todo[]> {
   const res = await UserModel.find({ id });
   const [user] = res;
-  console.log(user);
 
   const newTodo: Todo = {
     id: uuid(),

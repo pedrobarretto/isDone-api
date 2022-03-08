@@ -1,4 +1,5 @@
 import bcrypt from 'bcryptjs';
+import { Request } from 'express';
 import jwt from 'jsonwebtoken';
 
 import { TokenPayload } from '../../interfaces/Auth';
@@ -43,4 +44,13 @@ export function hidePassword(user: User): ClientUser {
     createdDate: user.createdDate,
     id: user.id,
   };
+}
+
+export function getUserId(req: Request) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { session }: any = req;
+
+  if (!session.userId) return '';
+
+  return session.userId;
 }

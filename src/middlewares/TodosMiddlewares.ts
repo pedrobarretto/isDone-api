@@ -1,13 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
 
 import { todosApp } from '../apps/todos/TodosApp';
+import { getUserId } from '../database/users/users.methods';
 
 export function VerifyIfUsersExists(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
-  const { id } = req.params;
+  const id = getUserId(req);
 
   if (!id)
     return res
