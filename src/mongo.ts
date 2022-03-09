@@ -1,4 +1,5 @@
 import MongoStore from 'connect-mongo';
+// import * as connectMongo from 'connect-mongo';
 import dotenv from 'dotenv';
 import session from 'express-session';
 import mongoose from 'mongoose';

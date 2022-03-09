@@ -44,6 +44,7 @@ class TodosApp {
 
   create(req: Request): void {
     const { firstName, lastName, fullName, email, password } = req.body;
+    console.log('create: ', req.body);
 
     handlePasswordHash(password).then((pwd) => {
       const newUser: User = {

@@ -8,14 +8,18 @@ import { router } from './routes';
 
 const app = express();
 
+const store = new session.MemoryStore();
+
 app.use(
   session({
     secret: process.env.SECRET_KEY,
     resave: false,
-    saveUninitialized: true,
-    store: sessionStore,
+    saveUninitialized: false,
+    store,
     cookie: {
       maxAge: 1000 * 60 * 60 * 24,
+      secure: process.env.ENVIRONMENT === 'production',
+      sameSite: true,
     },
   })
 );

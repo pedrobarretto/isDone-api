@@ -21,7 +21,7 @@ import {
 const userRoutes = Router();
 
 userRoutes.post(
-  '/',
+  '/register',
   [check('email', 'must-provide-valid-email').isEmail()],
   VerifyIfUserAlreadyExists,
   (req: Request, res: Response) => {
@@ -37,6 +37,7 @@ userRoutes.post('/login', VerifyUserLogin, (req: Request, res: Response) => {
     const token = handleGenerateToken(payload);
 
     const { session }: any = req;
+    console.log('req.sessionID: ', req.sessionID);
     if (!session.userId) {
       session.userId = user.id;
       const newSession: Session = {
@@ -46,6 +47,8 @@ userRoutes.post('/login', VerifyUserLogin, (req: Request, res: Response) => {
         httpOnly: req.session.cookie.httpOnly,
         originalMaxAge: req.session.cookie.originalMaxAge,
         path: req.session.cookie.path,
+        email: user.email,
+        sessionId: req.sessionID,
       };
       console.log(newSession);
       console.log('session ', session);
@@ -64,9 +67,10 @@ userRoutes.get('/all', (req: Request, res: Response) => {
 });
 
 userRoutes.get('/', VerifyIfUsersExists, (req: Request, res: Response) => {
-  const id = getUserId(req);
-  todosApp.findById(id).then((user) => {
-    return res.status(200).json(user);
+  getUserId(req).then((session) => {
+    todosApp.findById(session.userId).then((user) => {
+      return res.status(200).json(user);
+    });
   });
 });
 

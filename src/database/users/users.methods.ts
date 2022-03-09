@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 import { Request } from 'express';
 import jwt from 'jsonwebtoken';
 
+import { sessionApp } from '../../apps/sessions/SessionsApp';
 import { TokenPayload } from '../../interfaces/Auth';
 import { ClientUser, User } from '../../interfaces/User';
 
@@ -46,11 +47,9 @@ export function hidePassword(user: User): ClientUser {
   };
 }
 
-export function getUserId(req: Request) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function getUserId(req: Request) {
+  // const session = sessionApp.findBySessionId(req);
+  // return session;
   const { session }: any = req;
-
-  if (!session.userId) return '';
-
   return session.userId;
 }

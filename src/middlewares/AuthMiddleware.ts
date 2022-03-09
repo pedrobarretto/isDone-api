@@ -8,6 +8,7 @@ export function AuthMiddleware(
   next: NextFunction
 ) {
   const token = req.header('Authorization');
+  console.log(token);
 
   if (!token)
     return res.status(403).send({ status: 403, message: 'Forbidden Resourse' });

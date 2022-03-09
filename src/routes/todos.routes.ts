@@ -17,17 +17,22 @@ const todosRoutes = Router();
 todosRoutes.use(AuthMiddleware);
 
 todosRoutes.get('/list', VerifyIfUsersExists, (req: Request, res: Response) => {
-  const id = getUserId(req);
-  listTodos(id).then((data) => {
-    return res.status(200).json(data);
+  console.log('Pegando to-dos...');
+  getUserId(req).then((stro) => {
+    console.log('session db: ', stro);
+    listTodos(stro.userId).then((data) => {
+      console.log('Retornando dados: ', data);
+      return res.status(200).json(data);
+    });
   });
 });
 
 todosRoutes.post('/', VerifyIfUsersExists, (req: Request, res: Response) => {
-  const id = getUserId(req);
-  const { text } = req.body;
-  createTodo(id, text).then((data) => {
-    return res.status(201).json(data);
+  getUserId(req).then((session) => {
+    const { text } = req.body;
+    createTodo(session.userId, text).then((data) => {
+      return res.status(201).json(data);
+    });
   });
 });
 
@@ -35,10 +40,11 @@ todosRoutes.put(
   '/:todoId',
   VerifyIfTodoExists,
   (req: Request, res: Response) => {
-    const id = getUserId(req);
-    const { todoId } = req.params;
-    markTodoAsDone(id, todoId).then(() => {
-      return res.sendStatus(204);
+    getUserId(req).then((session) => {
+      const { todoId } = req.params;
+      markTodoAsDone(session.userId, todoId).then(() => {
+        return res.sendStatus(204);
+      });
     });
   }
 );

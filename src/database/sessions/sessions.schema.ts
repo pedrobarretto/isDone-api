@@ -9,6 +9,8 @@ const SessionsSchema = new Schema<Session>({
   path: { type: String, required: true },
   originalMaxAge: { type: Number, required: true },
   httpOnly: { type: Boolean, required: true },
+  email: { type: String, required: true },
+  sessionId: { type: String, required: true },
 });
 
 export { SessionsSchema };

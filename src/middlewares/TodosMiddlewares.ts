@@ -8,16 +8,22 @@ export function VerifyIfUsersExists(
   res: Response,
   next: NextFunction
 ) {
-  const id = getUserId(req);
+  console.log('middleware VerifyIfUsersExists');
+  getUserId(req).then((id) => {
+    console.log('sessionId: ', req.sessionID);
+    console.log('session middle: ', id);
+    if (!id)
+      return res
+        .status(400)
+        .send({ status: 400, message: 'must-provide-user-id' });
 
-  if (!id)
-    return res
-      .status(400)
-      .send({ status: 400, message: 'must-provide-user-id' });
+    todosApp.findById(id).then((user) => {
+      console.log('user by id: ', user);
+      if (!user)
+        return res.status(400).send({ status: 400, message: 'not-found' });
 
-  todosApp.findById(id).then((user) => {
-    if (!user)
-      return res.status(400).send({ status: 400, message: 'not-found' });
+      return next();
+    });
 
     return next();
   });

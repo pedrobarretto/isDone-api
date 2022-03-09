@@ -17,4 +17,6 @@ export interface Session {
   _expires: Date;
   originalMaxAge: number;
   httpOnly: boolean;
+  email: string;
+  sessionId: string;
 }
