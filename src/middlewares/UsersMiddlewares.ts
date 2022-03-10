@@ -67,13 +67,13 @@ export function VerifyUserLogin(
 
   todosApp.findByEmailIntern(email).then(async (user) => {
     if (!user)
-      return res.status(400).send({ message: 'not-found', statusCode: 400 });
+      return res.status(404).send({ message: 'not-found', statusCode: 400 });
 
     const isMatch = await comparePassword(password, user.password);
 
     if (!isMatch)
       return res
-        .status(200)
+        .status(400)
         .send({ message: 'incorrect-password', statusCode: 400 });
 
     return next();
