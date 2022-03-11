@@ -10,6 +10,13 @@ const app = express();
 
 const store = new session.MemoryStore();
 
+declare module 'express-session' {
+  interface SessionData {
+    isAuth: boolean;
+    userId: string;
+  }
+}
+
 app.use(
   session({
     secret: process.env.SECRET_KEY,
@@ -26,12 +33,14 @@ app.use(
 
 app.use(express.json());
 
-app.use(cors());
-app.options('*', cors());
+app.use(cors({ credentials: true, origin: process.env.BASE_URL }));
+// app.options('*', cors());
 
 app.use(bodyParser.json());
 app.use(router);
 
 connect();
 
-app.listen(process.env.PORT || 3333);
+app.listen(process.env.PORT || 3333, () => {
+  console.log('App runnig on port ', process.env.PORT);
+});

@@ -30,16 +30,21 @@ userRoutes.post(
   }
 );
 
+userRoutes.get('/', (req: Request, res: Response) => {
+  return res
+    .status(200)
+    .send({ sessionId: req.sessionID, session: req.session });
+});
+
 userRoutes.post('/login', VerifyUserLogin, (req: Request, res: Response) => {
   const { email } = req.body;
   todosApp.findByEmail(email).then((user) => {
     const payload = gerenateTokenPayload(user.id);
     const token = handleGenerateToken(payload);
 
-    const { session }: any = req;
-    console.log('req.sessionID: ', req.sessionID);
-    if (!session.userId) {
-      session.userId = user.id;
+    if (!req.session.userId) {
+      req.session.isAuth = true;
+      req.session.userId = user.id;
       const newSession: Session = {
         userId: user.id,
         id: uuid(),
@@ -51,7 +56,7 @@ userRoutes.post('/login', VerifyUserLogin, (req: Request, res: Response) => {
         sessionId: req.sessionID,
       };
       console.log(newSession);
-      console.log('session ', session);
+      console.log('session ', req.session);
       SessionModel.create(newSession);
     }
     return res.status(200).json({ token });
@@ -67,23 +72,20 @@ userRoutes.get('/all', (req: Request, res: Response) => {
 });
 
 userRoutes.get('/', VerifyIfUsersExists, (req: Request, res: Response) => {
-  getUserId(req).then((session) => {
-    todosApp.findById(session.userId).then((user) => {
+  getUserId(req).then((userId) => {
+    todosApp.findById(userId).then((user) => {
       return res.status(200).json(user);
     });
   });
 });
 
 userRoutes.post('/logout', (req: Request, res: Response) => {
-  const { session }: any = req;
-  console.log(session);
-
-  if (!session.userId)
+  if (!req.session.userId)
     return res
       .status(400)
       .json({ status: 400, message: 'session-does-not-exists' });
 
-  SessionModel.deleteOne({ userId: session.userId }).then((x) =>
+  SessionModel.deleteOne({ userId: req.session.userId }).then((x) =>
     console.log(x)
   );
   req.session.destroy((err) => console.log(err));

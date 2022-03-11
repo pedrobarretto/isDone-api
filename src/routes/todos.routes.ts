@@ -18,9 +18,9 @@ todosRoutes.use(AuthMiddleware);
 
 todosRoutes.get('/list', VerifyIfUsersExists, (req: Request, res: Response) => {
   console.log('Pegando to-dos...');
-  getUserId(req).then((stro) => {
-    console.log('session db: ', stro);
-    listTodos(stro.userId).then((data) => {
+  getUserId(req).then((userId) => {
+    console.log('getuserId func: ', userId);
+    listTodos(userId).then((data) => {
       console.log('Retornando dados: ', data);
       return res.status(200).json(data);
     });
@@ -28,9 +28,11 @@ todosRoutes.get('/list', VerifyIfUsersExists, (req: Request, res: Response) => {
 });
 
 todosRoutes.post('/', VerifyIfUsersExists, (req: Request, res: Response) => {
-  getUserId(req).then((session) => {
-    const { text } = req.body;
-    createTodo(session.userId, text).then((data) => {
+  const { text } = req.body;
+  getUserId(req).then((userId) => {
+    console.log('Criando todo para userId: ', userId);
+    createTodo(userId, text).then((data) => {
+      console.log('Todo Data: ', data);
       return res.status(201).json(data);
     });
   });
@@ -40,9 +42,9 @@ todosRoutes.put(
   '/:todoId',
   VerifyIfTodoExists,
   (req: Request, res: Response) => {
-    getUserId(req).then((session) => {
+    getUserId(req).then((userId) => {
       const { todoId } = req.params;
-      markTodoAsDone(session.userId, todoId).then(() => {
+      markTodoAsDone(userId, todoId).then(() => {
         return res.sendStatus(204);
       });
     });

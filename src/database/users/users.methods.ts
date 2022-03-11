@@ -48,9 +48,5 @@ export function hidePassword(user: User): ClientUser {
 }
 
 export async function getUserId(req: Request) {
-  // const session = sessionApp.findBySessionId(req);
-  // return session;
-  const { session }: any = req;
-  console.log('session.userId:', session.userId);
-  return session.userId;
+  return req.session.userId;
 }
