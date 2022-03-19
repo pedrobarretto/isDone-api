@@ -17,4 +17,6 @@ app.use(router);
 
 connect();
 
-app.listen(process.env.PORT || 3333);
+app.listen(process.env.PORT || 3333, () =>
+  console.log(`Running on port ${process.env.PORT || '3333'}`)
+);
