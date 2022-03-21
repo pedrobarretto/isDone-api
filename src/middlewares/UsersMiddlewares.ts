@@ -9,10 +9,8 @@ export function VerifyIfUserAlreadyExists(
   next: NextFunction
 ) {
   const { email, firstName, lastName, fullName, password } = req.body;
-  console.log(req.body);
 
   todosApp.findByEmailIntern(email).then((user) => {
-    console.log('user: ', user);
     if (!firstName)
       return res
         .status(400)
@@ -43,7 +41,6 @@ export function VerifyIfUserAlreadyExists(
         .status(400)
         .send({ message: 'user-already-exists', statusCode: 400 });
 
-    console.log('Next...');
     return next();
   });
 }

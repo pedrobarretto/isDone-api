@@ -12,27 +12,31 @@ export async function listTodos(id: string): Promise<Todo[]> {
 }
 
 export async function createTodo(id: string, text: string): Promise<Todo[]> {
-  const res = await UserModel.find({ id });
-  const [user] = res;
+  try {
+    const res = await UserModel.find({ id });
+    const [user] = res;
 
-  const newTodo: Todo = {
-    id: uuid(),
-    createdDate: new Date(),
-    text,
-    isDone: false,
-  };
-  const newTodosLst = [...user.todos, newTodo];
+    const newTodo: Todo = {
+      id: uuid(),
+      createdDate: new Date(),
+      text,
+      isDone: false,
+    };
+    const newTodosLst = [...user.todos, newTodo];
 
-  await UserModel.updateOne(
-    { id },
-    {
-      $set: {
-        todos: newTodosLst,
-      },
-    }
-  );
+    await UserModel.updateOne(
+      { id },
+      {
+        $set: {
+          todos: newTodosLst,
+        },
+      }
+    );
 
-  return [newTodo];
+    return [newTodo];
+  } catch (err) {
+    return err;
+  }
 }
 
 export async function markTodoAsDone(

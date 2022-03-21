@@ -14,6 +14,8 @@ export async function listUsers(): Promise<UserDocument[]> {
 
 export async function createUser(dto: User): Promise<UserDocument> {
   const user = await UserModel.create(dto);
+  console.debug('User Created >> ');
+  console.log(user);
   return user;
 }
 

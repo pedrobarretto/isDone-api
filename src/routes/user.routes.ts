@@ -55,8 +55,6 @@ userRoutes.post('/login', VerifyUserLogin, (req: Request, res: Response) => {
         email: user.email,
         sessionId: req.sessionID,
       };
-      console.log(newSession);
-      console.log('session ', req.session);
       SessionModel.create(newSession);
     }
     return res.status(200).json({ token });
@@ -85,9 +83,7 @@ userRoutes.post('/logout', (req: Request, res: Response) => {
       .status(400)
       .json({ status: 400, message: 'session-does-not-exists' });
 
-  SessionModel.deleteOne({ userId: req.session.userId }).then((x) =>
-    console.log(x)
-  );
+  SessionModel.deleteOne({ userId: req.session.userId });
   req.session.destroy((err) => console.log(err));
   return res.status(200).json({ status: 200, message: 'session-deleted' });
 });

@@ -17,33 +17,32 @@ const todosRoutes = Router();
 todosRoutes.use(AuthMiddleware);
 
 todosRoutes.get('/list', VerifyIfUsersExists, (req: Request, res: Response) => {
-  console.log('Pegando to-dos...');
   getUserId(req).then((userId) => {
-    console.log('getuserId func: ', userId);
     listTodos(userId).then((data) => {
-      console.log('Retornando dados: ', data);
       return res.status(200).json(data);
     });
   });
 });
 
-todosRoutes.post('/', VerifyIfUsersExists, (req: Request, res: Response) => {
-  const { text } = req.body;
-  getUserId(req).then((userId) => {
-    console.log('Criando todo para userId: ', userId);
-    createTodo(userId, text).then((data) => {
-      console.log('Todo Data: ', data);
-      return res.status(201).json(data);
+todosRoutes.post(
+  '/newTodo',
+  VerifyIfUsersExists,
+  (req: Request, res: Response) => {
+    const { text } = req.body;
+    getUserId(req).then((userId) => {
+      createTodo(userId, text).then((data) => {
+        return res.status(201).json(data);
+      });
     });
-  });
-});
+  }
+);
 
 todosRoutes.put(
   '/:todoId',
   VerifyIfTodoExists,
   (req: Request, res: Response) => {
+    const { todoId } = req.params;
     getUserId(req).then((userId) => {
-      const { todoId } = req.params;
       markTodoAsDone(userId, todoId).then(() => {
         return res.sendStatus(204);
       });

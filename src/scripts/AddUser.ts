@@ -14,12 +14,13 @@ import { connect, disconnect } from '../mongo';
       fullName: 'Emma Bradley',
       todos: [],
       id: uuid(),
+      email: 'teste@gmail.com.br',
+      password: 'Senha123',
     },
   ];
   try {
     users.forEach(async (user) => {
       await UserModel.create(user);
-      console.log('User created');
     });
     setTimeout(() => {
       disconnect();
