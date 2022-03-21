@@ -3,7 +3,7 @@ import cors from 'cors';
 import express from 'express';
 import session from 'express-session';
 
-import { connect, sessionStore } from './mongo';
+import { connect } from './mongo';
 import { router } from './routes';
 
 const app = express();
@@ -34,7 +34,6 @@ app.use(
 app.use(express.json());
 
 app.use(cors({ credentials: true, origin: process.env.BASE_URL }));
-// app.options('*', cors());
 
 app.use(bodyParser.json());
 app.use(router);
