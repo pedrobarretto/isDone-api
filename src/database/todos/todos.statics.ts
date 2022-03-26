@@ -58,3 +58,19 @@ export async function markTodoAsDone(
     }
   );
 }
+
+export async function deleteTodo(id: string, todoId: string): Promise<void> {
+  const [user] = await UserModel.find({ id });
+  const { todos } = user;
+
+  const newTodosLst = todos.filter((todo) => todo.id !== todoId);
+
+  await UserModel.updateOne(
+    { id },
+    {
+      $set: {
+        todos: newTodosLst,
+      },
+    }
+  );
+}

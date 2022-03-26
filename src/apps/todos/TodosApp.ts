@@ -26,7 +26,6 @@ class TodosApp {
 
   findById(id: string): Promise<ClientUser> {
     const user = findUser(id).then((user) => {
-      console.debug(`User Found By Id >> ${JSON.stringify(user)}`);
       if (user) return hidePassword(user);
 
       return user;
@@ -67,7 +66,6 @@ class TodosApp {
   delete(id: string): Promise<void> {
     return findUser(id).then((user) => {
       if (user) {
-        console.debug(`User Found >> ${user.email}`);
         deleteUser(id);
       }
     });

@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 
 import {
   createTodo,
+  deleteTodo,
   listTodos,
   markTodoAsDone,
 } from '../database/todos/todos.statics';
@@ -46,6 +47,18 @@ todosRoutes.put(
       markTodoAsDone(userId, todoId).then(() => {
         return res.sendStatus(204);
       });
+    });
+  }
+);
+
+todosRoutes.delete(
+  '/delete/:todoId',
+  VerifyIfTodoExists,
+  (req: Request, res: Response) => {
+    const { todoId } = req.params;
+    const { userId } = req.session;
+    deleteTodo(userId, todoId).then(() => {
+      return res.sendStatus(204);
     });
   }
 );

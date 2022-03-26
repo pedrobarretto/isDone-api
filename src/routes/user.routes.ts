@@ -1,16 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Router, Request, Response } from 'express';
 import { check } from 'express-validator';
-import { v4 as uuid } from 'uuid';
 
 import { todosApp } from '../apps/todos/TodosApp';
-import { SessionModel } from '../database/sessions/sessions.model';
 import {
   gerenateTokenPayload,
   getUserId,
   handleGenerateToken,
 } from '../database/users/users.methods';
-import { Session } from '../interfaces/Auth';
 import { AuthMiddleware } from '../middlewares/AuthMiddleware';
 import { VerifyIfUsersExists } from '../middlewares/TodosMiddlewares';
 import {
@@ -40,17 +37,6 @@ userRoutes.post('/login', VerifyUserLogin, (req: Request, res: Response) => {
     if (!req.session.userId) {
       req.session.isAuth = true;
       req.session.userId = user.id;
-      // const newSession: Session = {
-      //   userId: user.id,
-      //   id: uuid(),
-      //   _expires: req.session.cookie.expires,
-      //   httpOnly: req.session.cookie.httpOnly,
-      //   originalMaxAge: req.session.cookie.originalMaxAge,
-      //   path: req.session.cookie.path,
-      //   email: user.email,
-      //   sessionId: req.sessionID,
-      // };
-      // SessionModel.create(newSession);
     }
     return res.status(200).json({ token });
   });
@@ -72,24 +58,11 @@ userRoutes.get('/', VerifyIfUsersExists, (req: Request, res: Response) => {
   });
 });
 
-userRoutes.post('/logout', (req: Request, res: Response) => {
-  if (!req.session.userId)
-    return res
-      .status(400)
-      .json({ status: 400, message: 'session-does-not-exists' });
-
-  SessionModel.deleteOne({ userId: req.session.userId });
-  req.session.destroy((err) => console.log(err));
-  return res.status(200).json({ status: 200, message: 'session-deleted' });
-});
-
 userRoutes.delete(
   '/delete/:id',
   VerifyParamsId,
   (req: Request, res: Response) => {
     const { id } = req.params;
-    console.debug(`Deleting user with id: ${id}`);
-
     todosApp.delete(id).then(() => {
       return res.status(204).send();
     });
