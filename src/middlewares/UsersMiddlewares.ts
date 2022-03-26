@@ -86,15 +86,9 @@ export function VerifyParamsId(
     return res.status(404).send({ status: 404, message: 'must-provide-id' });
 
   todosApp.findById(id).then((user) => {
-    console.debug(`User found: ${JSON.stringify(user)}`);
-    console.debug(`!user >> ${!user}`);
-    if (!user) {
-      console.debug('User not found');
+    if (!user)
       return res.status(404).send({ status: 404, message: 'user-not-found' });
-    }
-    console.debug('User found');
+
     return next();
   });
-  console.debug('next');
-  return next();
 }

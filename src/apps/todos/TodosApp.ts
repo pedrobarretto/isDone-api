@@ -64,8 +64,8 @@ class TodosApp {
     });
   }
 
-  delete(id: string): void {
-    findUser(id).then((user) => {
+  delete(id: string): Promise<void> {
+    return findUser(id).then((user) => {
       if (user) {
         console.debug(`User Found >> ${user.email}`);
         deleteUser(id);

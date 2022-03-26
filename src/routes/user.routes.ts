@@ -31,19 +31,6 @@ userRoutes.post(
   }
 );
 
-userRoutes.delete(
-  '/delete/:id',
-  VerifyParamsId,
-  (req: Request, res: Response) => {
-    const { id } = req.params;
-    console.debug(`Deleting user with id: ${id}`);
-
-    todosApp.delete(id);
-    console.debug('Sending status of 204');
-    return res.sendStatus(204);
-  }
-);
-
 userRoutes.post('/login', VerifyUserLogin, (req: Request, res: Response) => {
   const { email } = req.body;
   todosApp.findByEmail(email).then((user) => {
@@ -95,5 +82,18 @@ userRoutes.post('/logout', (req: Request, res: Response) => {
   req.session.destroy((err) => console.log(err));
   return res.status(200).json({ status: 200, message: 'session-deleted' });
 });
+
+userRoutes.delete(
+  '/delete/:id',
+  VerifyParamsId,
+  (req: Request, res: Response) => {
+    const { id } = req.params;
+    console.debug(`Deleting user with id: ${id}`);
+
+    todosApp.delete(id).then(() => {
+      return res.status(204).send();
+    });
+  }
+);
 
 export { userRoutes };
