@@ -7,6 +7,7 @@ import {
 } from '../../database/users/users.methods';
 import {
   createUser,
+  deleteUser,
   findUser,
   findUserByEmail,
   listUsers,
@@ -25,7 +26,10 @@ class TodosApp {
 
   findById(id: string): Promise<ClientUser> {
     const user = findUser(id).then((user) => {
-      return hidePassword(user);
+      console.debug(`User Found By Id >> ${JSON.stringify(user)}`);
+      if (user) return hidePassword(user);
+
+      return user;
     });
     return user;
   }
@@ -57,6 +61,15 @@ class TodosApp {
         todos: [],
       };
       createUser(newUser);
+    });
+  }
+
+  delete(id: string): void {
+    findUser(id).then((user) => {
+      if (user) {
+        console.debug(`User Found >> ${user.email}`);
+        deleteUser(id);
+      }
     });
   }
 }

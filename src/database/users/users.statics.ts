@@ -23,3 +23,7 @@ export async function findUserByEmail(email: string): Promise<UserDocument> {
   const user = await UserModel.findOne({ email });
   return user;
 }
+
+export async function deleteUser(id: string): Promise<void> {
+  await UserModel.deleteOne({ id });
+}

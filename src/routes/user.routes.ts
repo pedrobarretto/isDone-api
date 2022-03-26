@@ -15,6 +15,7 @@ import { AuthMiddleware } from '../middlewares/AuthMiddleware';
 import { VerifyIfUsersExists } from '../middlewares/TodosMiddlewares';
 import {
   VerifyIfUserAlreadyExists,
+  VerifyParamsId,
   VerifyUserLogin,
 } from '../middlewares/UsersMiddlewares';
 
@@ -30,11 +31,18 @@ userRoutes.post(
   }
 );
 
-userRoutes.get('/', (req: Request, res: Response) => {
-  return res
-    .status(200)
-    .send({ sessionId: req.sessionID, session: req.session });
-});
+userRoutes.delete(
+  '/delete/:id',
+  VerifyParamsId,
+  (req: Request, res: Response) => {
+    const { id } = req.params;
+    console.debug(`Deleting user with id: ${id}`);
+
+    todosApp.delete(id);
+    console.debug('Sending status of 204');
+    return res.sendStatus(204);
+  }
+);
 
 userRoutes.post('/login', VerifyUserLogin, (req: Request, res: Response) => {
   const { email } = req.body;
@@ -45,17 +53,17 @@ userRoutes.post('/login', VerifyUserLogin, (req: Request, res: Response) => {
     if (!req.session.userId) {
       req.session.isAuth = true;
       req.session.userId = user.id;
-      const newSession: Session = {
-        userId: user.id,
-        id: uuid(),
-        _expires: req.session.cookie.expires,
-        httpOnly: req.session.cookie.httpOnly,
-        originalMaxAge: req.session.cookie.originalMaxAge,
-        path: req.session.cookie.path,
-        email: user.email,
-        sessionId: req.sessionID,
-      };
-      SessionModel.create(newSession);
+      // const newSession: Session = {
+      //   userId: user.id,
+      //   id: uuid(),
+      //   _expires: req.session.cookie.expires,
+      //   httpOnly: req.session.cookie.httpOnly,
+      //   originalMaxAge: req.session.cookie.originalMaxAge,
+      //   path: req.session.cookie.path,
+      //   email: user.email,
+      //   sessionId: req.sessionID,
+      // };
+      // SessionModel.create(newSession);
     }
     return res.status(200).json({ token });
   });
