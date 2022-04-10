@@ -12,6 +12,9 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "engines" : { 
+    "node" : ">=16.0.0"
+  },
   "dependencies": {
     "@types/express-session": "^1.17.4",
     "bcryptjs": "^2.4.3",
